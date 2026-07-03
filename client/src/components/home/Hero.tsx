@@ -3,9 +3,25 @@ import { useNavigate } from "react-router-dom";
 
 import background from "../../assets/images/home/hero-background.avif";
 import Particles from "./Particles";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Hero() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const token = localStorage.getItem("token");
+
+  const handleButtonClick = () => {
+    if (token) {
+      navigate("/cyber-room");
+    } else {
+      navigate("/register");
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <motion.section
@@ -35,6 +51,43 @@ export default function Hero() {
 
       {/* Floating Particles */}
       <Particles />
+
+      {/* Top Navigation */}
+      <div className="absolute top-0 left-0 right-0 z-20 flex justify-between items-center px-12 py-6 bg-gradient-to-b from-black/60 to-transparent">
+        <div className="text-2xl font-black text-cyan-400 tracking-wider">
+          EXPLORIA
+        </div>
+        <div className="flex gap-6 items-center">
+          {token ? (
+            <>
+              <span className="text-zinc-300 font-medium text-sm md:text-base">
+                Explorer: <span className="text-cyan-400">{user?.explorer_name || "Active"}</span>
+              </span>
+              <button
+                onClick={handleLogout}
+                className="px-5 py-2 rounded-lg border border-red-500/40 bg-red-500/10 text-red-300 hover:bg-red-500 hover:text-white transition-all duration-300 text-sm font-semibold cursor-pointer"
+              >
+                LOGOUT
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => navigate("/login")}
+                className="text-cyan-300 hover:text-cyan-100 transition font-semibold text-sm cursor-pointer"
+              >
+                LOGIN
+              </button>
+              <button
+                onClick={() => navigate("/register")}
+                className="px-5 py-2 rounded-lg border border-cyan-400 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-400 hover:text-black transition-all duration-300 text-sm font-semibold cursor-pointer"
+              >
+                REGISTER
+              </button>
+            </>
+          )}
+        </div>
+      </div>
 
       {/* Hero Content */}
       <div className="relative z-10 flex h-full items-center">
@@ -74,7 +127,7 @@ export default function Hero() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => navigate("/register")}
+            onClick={handleButtonClick}
             className="
               mt-12
               px-10
@@ -92,9 +145,10 @@ export default function Hero() {
               transition-all
               duration-300
               hover:shadow-[0_0_40px_#22d3ee]
+              cursor-pointer
             "
           >
-            ▶ ENTER EXPLORIA
+            {token ? "▶ ENTER MISSION" : "▶ ENTER EXPLORIA"}
           </motion.button>
         </motion.div>
       </div>

@@ -7,6 +7,7 @@ import {
 
 interface User {
   email: string;
+  explorer_name?: string;
 }
 
 interface AuthContextType {
@@ -24,7 +25,14 @@ export const AuthProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const savedUser = localStorage.getItem("user");
+    try {
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch {
+      return null;
+    }
+  });
 
   const login = (user: User) => {
     setUser(user);

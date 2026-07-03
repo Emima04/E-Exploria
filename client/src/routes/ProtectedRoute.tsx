@@ -1,7 +1,8 @@
+import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 
 interface Props {
-  children: JSX.Element;
+  children: ReactNode;
 }
 
 const ProtectedRoute = ({ children }: Props) => {

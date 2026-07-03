@@ -13,7 +13,12 @@ export const registerUser = async (data: {
   email: string;
   password: string;
 }) => {
-  return API.post("/register", data);
+  // We match Go's expectations here by changing the key name to explorer_name
+  return API.post("/register", {
+    explorer_name: data.name, 
+    email: data.email,
+    password: data.password,
+  });
 };
 
 // Login User

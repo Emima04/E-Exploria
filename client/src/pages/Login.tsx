@@ -5,9 +5,11 @@ import { motion } from "framer-motion";
 import Button from "../components/Button";
 import InputField from "../components/InputField";
 import { loginUser } from "../services/auth";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -67,6 +69,7 @@ const Login = () => {
           "user",
           JSON.stringify(response.data.user)
         );
+        login(response.data.user);
       }
 
       navigate("/");
