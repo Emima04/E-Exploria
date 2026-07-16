@@ -7,6 +7,25 @@ const API = axios.create({
   },
 });
 
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const data = error?.response?.data;
+    const message =
+      typeof data === "string"
+        ? data
+        : data?.message || data?.error || "Request failed";
+
+    return Promise.reject({
+      ...error,
+      message,
+      response: {
+        ...error.response,
+        data: data || {},
+      },
+    });
+  }
+);
 // Register User
 export const registerUser = async (data: {
   name: string;

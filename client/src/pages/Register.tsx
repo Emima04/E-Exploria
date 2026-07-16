@@ -80,8 +80,10 @@ const Register = () => {
 
       navigate("/login");
     } catch (err: any) {
-      if (err.response?.data?.message) {
-        setError(err.response.data.message);
+      const serverMessage = err.message || err.response?.data?.message || err.response?.data?.error;
+
+      if (serverMessage) {
+        setError(serverMessage);
       } else {
         setError("Registration failed. Please try again.");
       }

@@ -7,11 +7,10 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function Hero() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
-  const token = localStorage.getItem("token");
+  const { user, logout, isAuthenticated } = useAuth();
 
   const handleButtonClick = () => {
-    if (token) {
+    if (isAuthenticated) {
       navigate("/cyber-room");
     } else {
       navigate("/register");
@@ -58,7 +57,7 @@ export default function Hero() {
           EXPLORIA
         </div>
         <div className="flex gap-6 items-center">
-          {token ? (
+          {isAuthenticated ? (
             <>
               <span className="text-zinc-300 font-medium text-sm md:text-base">
                 Explorer: <span className="text-cyan-400">{user?.explorer_name || "Active"}</span>
@@ -148,7 +147,7 @@ export default function Hero() {
               cursor-pointer
             "
           >
-            {token ? "▶ ENTER MISSION" : "▶ ENTER EXPLORIA"}
+            {isAuthenticated ? "▶ ENTER MISSION" : "▶ ENTER EXPLORIA"}
           </motion.button>
         </motion.div>
       </div>

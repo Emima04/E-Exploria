@@ -60,17 +60,8 @@ const Login = () => {
     try {
       const response = await loginUser(formData);
 
-      // Save JWT Token
-      localStorage.setItem("token", response.data.token);
-
-      // Save User (optional)
-      if (response.data.user) {
-        localStorage.setItem(
-          "user",
-          JSON.stringify(response.data.user)
-        );
-        login(response.data.user);
-      }
+      const user = response.data.user ?? { email: formData.email };
+      login(user, response.data.token);
 
       navigate("/");
     } catch (err: any) {

@@ -1,9 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import background from "../assets/images/cyber/background.png";
-import MonitorPopup from "../components/puzzles/MonitorPopup";
+import AccessTerminalModal from "./AccessTerminalModal";
+import { useLocation } from "react-router-dom";
 
 export default function CyberRoom() {
+  const location = useLocation();
   const [showMonitor, setShowMonitor] = useState(false);
+  const [incomingDomain, setIncomingDomain] = useState<string | null>(null);
+
+  useEffect(() => {
+    const state: any = location.state;
+    if (state && state.selectedDomain) {
+      setIncomingDomain(state.selectedDomain || "HTML5");
+      setShowMonitor(true);
+    }
+  }, [location.state]);
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
@@ -15,15 +27,16 @@ export default function CyberRoom() {
         alt="Cyber Room"
         className="w-full h-screen object-cover"
       />
-
-
-
       {/* Monitor Hotspot */}
 
-      <button
+      <motion.button
+        type="button"
         onClick={() => setShowMonitor(true)}
+        aria-label="Open access terminal"
+        whileHover={{ scale: 1.01, boxShadow: "0 0 35px rgba(34, 211, 238, 0.6)" }}
+        whileTap={{ scale: 0.98 }}
         className="
-          absolute
+          absolute z-20
           bg-cyan-500/10
           border border-cyan-400/50
           hover:bg-cyan-500/20
@@ -32,6 +45,7 @@ export default function CyberRoom() {
           transition-all
           duration-300
           cursor-pointer
+          rounded-xl
         "
         style={{
           top: "18.7%",
@@ -101,10 +115,11 @@ export default function CyberRoom() {
 
 
 
-      {/* Monitor Terminal Popup */}
+      {/* Access Terminal Modal */}
 
       {showMonitor && (
-        <MonitorPopup
+        <AccessTerminalModal
+          selectedDomain={incomingDomain || "HTML5"}
           onClose={() => setShowMonitor(false)}
         />
       )}
