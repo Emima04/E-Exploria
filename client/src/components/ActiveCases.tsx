@@ -19,7 +19,11 @@ type CaseItem = {
   iconKey?: string;
 };
 
-export default function ActiveCases() {
+type ActiveCasesProps = {
+  onSelectMission?: (domainKey: string) => void;
+};
+
+export default function ActiveCases({ onSelectMission }: ActiveCasesProps) {
   const navigate = useNavigate();
   const [cases, setCases] = useState<CaseItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -94,6 +98,7 @@ export default function ActiveCases() {
                 onClick={() => {
                   if (mission.status !== "LOCKED") {
                     const domain = mapToDomain(mission.title);
+                    onSelectMission?.(domain);
                     navigate("/cyber-room", { state: { selectedDomain: domain } });
                   }
                 }}

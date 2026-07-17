@@ -1,4 +1,4 @@
-import { useState } from "react"; // Added useState hook
+import { useState, useEffect } from "react"; // Added useState hook
 import { motion } from "framer-motion";
 import {
   Bell,
@@ -36,11 +36,58 @@ export default function Home() {
   // ==========================================
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   const [selectedDomain, setSelectedDomain] = useState("HTML5");
+  const [currentMissionDomain, setCurrentMissionDomain] = useState("DBMS");
+  const [xp, setXp] = useState(1200);
+  const [level, setLevel] = useState(7);
 
-  // Call this function anywhere to initiate a specific test shard
+  const xpThreshold = 1000 + level * 100;
+  const xpProgress = Math.min(100, Math.round((xp % xpThreshold / xpThreshold) * 100));
+
+  useEffect(() => {
+    const saved = localStorage.getItem("currentMissionDomain");
+    const savedXp = localStorage.getItem("xp");
+    const savedLevel = localStorage.getItem("level");
+
+    if (saved) {
+      setCurrentMissionDomain(saved);
+    }
+    if (savedXp) {
+      setXp(parseInt(savedXp, 10));
+    }
+    if (savedLevel) {
+      setLevel(parseInt(savedLevel, 10));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("currentMissionDomain", currentMissionDomain);
+  }, [currentMissionDomain]);
+
+  useEffect(() => {
+    localStorage.setItem("xp", xp.toString());
+    localStorage.setItem("level", level.toString());
+  }, [xp, level]);
+
   const handleLaunchQuiz = (domainKey: string) => {
     setSelectedDomain(domainKey);
+    setCurrentMissionDomain(domainKey);
     setIsTerminalOpen(true);
+  };
+
+  const handleCurrentMissionUpdate = (domainKey: string) => {
+    setCurrentMissionDomain(domainKey);
+  };
+
+  const handleMissionComplete = (gain: number) => {
+    setXp((prev) => prev + gain);
+    setLevel((prev) => {
+      const newXp = xp + gain;
+      const nextThreshold = 1000 + prev * 100;
+      if (newXp >= nextThreshold) {
+        return prev + 1;
+      }
+      return prev;
+    });
   };
 
   const handleLogout = () => {
@@ -100,7 +147,7 @@ export default function Home() {
 
                 <h2 className="text-2xl font-bold">
 
-                  1200
+                  {xp}
 
                 </h2>
 
@@ -127,7 +174,7 @@ export default function Home() {
 
                 <h2 className="text-2xl font-bold">
 
-                  7
+                  {level}
 
                 </h2>
 
@@ -279,15 +326,15 @@ export default function Home() {
           <div className="col-span-6 space-y-6">
             {/* Current Mission */}
 
-            <MissionCard />
+            <MissionCard domainKey={currentMissionDomain} />
 
             {/* Active Cases */}
 
-            <ActiveCases />
+            <ActiveCases onSelectMission={handleCurrentMissionUpdate} />
 
             {/* Learning Missions */}
 
-            <LearningMissions />
+            <LearningMissions onSelectMission={handleCurrentMissionUpdate} />
 
           </div>
 

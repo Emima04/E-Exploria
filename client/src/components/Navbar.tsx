@@ -1,28 +1,32 @@
 // components/Navbar.tsx
 
 import { Home, Target, Trophy, Award } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const menus = [
     {
       title: "Home",
       icon: <Home size={18} />,
-      active: true,
+      to: "/",
     },
     {
       title: "Quests",
       icon: <Target size={18} />,
-      active: false,
+      to: "/quests",
     },
     {
       title: "Leaderboard",
       icon: <Trophy size={18} />,
-      active: false,
+      to: "/leaderboard",
     },
     {
       title: "Achievements",
       icon: <Award size={18} />,
-      active: false,
+      to: "/achievements",
     },
   ];
 
@@ -53,23 +57,24 @@ export default function Navbar() {
 
         <div className="flex items-center gap-7 rounded-2xl border border-cyan-500/20 bg-[#07101dcc] px-4 py-3 backdrop-blur-xl shadow-lg shadow-cyan-500/10">
 
-          {menus.map((menu) => (
-
-            <button
-              key={menu.title}
-              className={`flex items-center gap-6 rounded-xl px-16 py-5 text-base font-semibold transition-all duration-300 ${
-                menu.active
-                  ? "bg-cyan-400 text-black shadow-[0_0_25px_rgba(34,211,238,0.45)]"
-                  : "text-gray-300 hover:bg-cyan-500/10 hover:text-cyan-300"
-              }`}
-            >
-              {menu.icon}
-
-              <span>{menu.title}</span>
-
-            </button>
-
-          ))}
+          {menus.map((menu) => {
+            const isActive = location.pathname === menu.to;
+            return (
+              <button
+                key={menu.title}
+                type="button"
+                onClick={() => navigate(menu.to)}
+                className={`flex items-center gap-6 rounded-xl px-16 py-5 text-base font-semibold transition-all duration-300 ${
+                  isActive
+                    ? "bg-cyan-400 text-black shadow-[0_0_25px_rgba(34,211,238,0.45)]"
+                    : "text-gray-300 hover:bg-cyan-500/10 hover:text-cyan-300"
+                }`}
+              >
+                {menu.icon}
+                <span>{menu.title}</span>
+              </button>
+            );
+          })}
 
         </div>
 

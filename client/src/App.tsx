@@ -5,6 +5,12 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import ProtectedRoute, { PublicRoute } from "./routes/ProtectedRoute";
 
+// Mission flow pages
+import MissionPath from "./pages/MissionPath";
+import MissionIntro from "./pages/MissionIntro";
+import Quests from "./pages/Quests";
+import SubjectSelection from "./pages/SubjectSelection";
+
 // Future Pages
 import CyberRoom from "./pages/CyberRoom";
 import DetectiveRoom from "./pages/DetectiveRoom";
@@ -21,6 +27,12 @@ function App() {
         {/* Authentication */}
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+
+        {/* Mission flow pages */}
+        <Route path="/mission-path" element={<ProtectedRoute><MissionPath /></ProtectedRoute>} />
+        <Route path="/mission-intro" element={<ProtectedRoute><MissionIntro /></ProtectedRoute>} />
+        <Route path="/quests" element={<ProtectedRoute><Quests /></ProtectedRoute>} />
+        <Route path="/subject-selection" element={<ProtectedRoute><SubjectSelection /></ProtectedRoute>} />
 
         {/* Game Pages */}
         <Route path="/cyber-room" element={<ProtectedRoute><CyberRoom /></ProtectedRoute>} />

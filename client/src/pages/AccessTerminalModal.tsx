@@ -114,10 +114,12 @@ const DOMAIN_DATA: Record<string, DomainConfig> = {
 
 export default function AccessTerminalModal({ 
   selectedDomain = "HTML5", 
-  onClose 
+  onClose,
+  onMissionComplete
 }: { 
   selectedDomain?: string; 
   onClose: () => void; 
+  onMissionComplete?: () => void;
 }) {
   const currentDomain = DOMAIN_DATA[selectedDomain] || DOMAIN_DATA["HTML5"];
   
@@ -288,32 +290,39 @@ export default function AccessTerminalModal({
                 </div>
               </motion.div>
             ) : (
-              /* SUCCESS MATRIX DECRYPTION STATE */
+              /* MISSION COMPLETE SCREEN */
               <motion.div
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center text-center space-y-4 py-8 h-full"
+                className="flex flex-col items-center justify-center text-center space-y-5 py-8 h-full"
               >
-                <div className="text-4xl">💎</div>
-                <p className="text-cyan-400 font-mono tracking-widest text-[9px] uppercase font-bold">DECRYPTION SUCCESSFUL</p>
-                <h2 className="text-base font-black text-white uppercase tracking-wide">Data Shard Verified</h2>
-                <p className="text-slate-400 text-xs max-w-sm leading-relaxed">
-                  All system nodes are operational. The relational parameters have been recorded inside your local instance profile history registry.
-                </p>
-                <div className="flex gap-3 w-full max-w-sm pt-4">
-                  <button 
-                    onClick={handleReset}
-                    className="flex-1 bg-slate-950 text-slate-400 border border-slate-800 hover:text-slate-200 font-bold py-2.5 rounded-xl transition text-xs font-mono uppercase tracking-wider cursor-pointer"
-                  >
-                    Retry Shard
-                  </button>
-                  <button 
-                    onClick={onClose}
-                    className="flex-1 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black py-2.5 rounded-xl transition text-xs font-mono tracking-wider uppercase cursor-pointer shadow-md"
-                  >
-                    Exit Node
-                  </button>
+                <div className="text-5xl">🏆</div>
+                <p className="text-cyan-400 font-mono tracking-widest text-[9px] uppercase font-bold">MISSION COMPLETE</p>
+                <h2 className="text-2xl font-black text-white uppercase tracking-wide">{currentDomain.title} Secured</h2>
+                <div className="grid gap-3 sm:grid-cols-2 w-full max-w-lg">
+                  <div className="rounded-3xl border border-slate-800 bg-slate-950/90 p-4">
+                    <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Reward</p>
+                    <p className="mt-3 text-3xl font-black text-cyan-300">+50 XP</p>
+                  </div>
+                  <div className="rounded-3xl border border-slate-800 bg-slate-950/90 p-4">
+                    <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Badge Earned</p>
+                    <p className="mt-3 text-3xl font-black text-emerald-300">Cyber Sentinel</p>
+                  </div>
                 </div>
+                <div className="rounded-3xl border border-slate-800 bg-slate-950/90 p-5 text-left w-full max-w-lg">
+                  <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Next Mission</p>
+                  <p className="mt-3 text-lg font-semibold text-white">Next Mission Unlocked</p>
+                  <p className="mt-2 text-slate-400 text-sm">A fresh node is ready. Continue to unlock the next challenge in the mission path.</p>
+                </div>
+                <button
+                  onClick={() => {
+                    onMissionComplete?.();
+                    onClose();
+                  }}
+                  className="mt-2 inline-flex w-full max-w-xs items-center justify-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-bold text-black transition hover:bg-cyan-400 shadow-md"
+                >
+                  Continue
+                </button>
               </motion.div>
             )}
           </AnimatePresence>

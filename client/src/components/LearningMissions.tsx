@@ -90,7 +90,11 @@ type MissionState = {
   progress: number;
 };
 
-export default function LearningMissions() {
+type LearningMissionsProps = {
+  onSelectMission?: (domainKey: string) => void;
+};
+
+export default function LearningMissions({ onSelectMission }: LearningMissionsProps) {
   const navigate = useNavigate();
   const [missionState, setMissionState] = useState<Record<string, MissionState>>({});
 
@@ -188,7 +192,9 @@ export default function LearningMissions() {
                       },
                     };
                   });
-                  navigate("/cyber-room", { state: { selectedDomain: mapToDomain(mission.title) } });
+                  const domain = mapToDomain(mission.title);
+                  onSelectMission?.(domain);
+                  navigate("/cyber-room", { state: { selectedDomain: domain } });
                 }}
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-white/10 py-2 text-sm transition hover:bg-cyan-500 hover:text-black cursor-pointer"
               >

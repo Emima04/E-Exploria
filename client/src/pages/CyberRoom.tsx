@@ -25,8 +25,9 @@ export default function CyberRoom() {
       <img
         src={background}
         alt="Cyber Room"
-        className="w-full h-screen object-cover"
+        className="absolute inset-0 h-full w-full object-cover object-center"
       />
+      <div className="absolute inset-0 bg-black/30" />
       {/* Monitor Hotspot */}
 
       <motion.button
