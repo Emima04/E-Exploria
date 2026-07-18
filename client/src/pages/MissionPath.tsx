@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowRight, Lock, Shield, Sparkles } from "lucide-react";
 
@@ -111,10 +111,10 @@ export default function MissionPath() {
     objectives: ["No objectives defined."],
   };
 
-  const activeIndex = useMemo(
-    () => missionNodes.findIndex((node) => node.domain === activeNode.domain),
-    [activeNode.domain]
-  );
+  // const activeIndex = useMemo(
+  //   () => missionNodes.findIndex((node) => node.domain === activeNode.domain),
+  //   [activeNode.domain]
+  // );
 
   const handleSelectNode = (node: MissionNode) => {
     if (!node.unlocked) return;

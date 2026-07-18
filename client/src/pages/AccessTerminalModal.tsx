@@ -169,14 +169,14 @@ export default function AccessTerminalModal({
     }
   };
 
-  const handleReset = () => {
-    setCurrentQuestionIdx(0);
-    setSelectedAnswer(null);
-    setShowSuccess(false);
-    setAnswerStatus(null);
-    setFeedbackMessage(null);
-    setHintMessage(null);
-  };
+  // const handleReset = () => {
+  //   setCurrentQuestionIdx(0);
+  //   setSelectedAnswer(null);
+  //   setShowSuccess(false);
+  //   setAnswerStatus(null);
+  //   setFeedbackMessage(null);
+  //   setHintMessage(null);
+  // };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 select-none">

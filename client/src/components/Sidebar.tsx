@@ -2,9 +2,7 @@
 
 import {
   LayoutDashboard,
-  Target,
   Brain,
-  Award,
   Bot,
   Settings,
 } from "lucide-react";
@@ -20,16 +18,8 @@ export default function Sidebar() {
       active: true,
     },
     {
-      icon: <Target size={24} />,
-      name: "Quests",
-    },
-    {
       icon: <Brain size={24} />,
       name: "Skills",
-    },
-    {
-      icon: <Award size={24} />,
-      name: "Achievements",
     },
     {
       icon: <Bot size={24} />,

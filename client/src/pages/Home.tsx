@@ -40,8 +40,8 @@ export default function Home() {
   const [xp, setXp] = useState(1200);
   const [level, setLevel] = useState(7);
 
-  const xpThreshold = 1000 + level * 100;
-  const xpProgress = Math.min(100, Math.round((xp % xpThreshold / xpThreshold) * 100));
+  // const xpThreshold = 1000 + level * 100;
+  // const xpProgress = Math.min(100, Math.round((xp % xpThreshold / xpThreshold) * 100));
 
   useEffect(() => {
     const saved = localStorage.getItem("currentMissionDomain");
@@ -78,17 +78,17 @@ export default function Home() {
     setCurrentMissionDomain(domainKey);
   };
 
-  const handleMissionComplete = (gain: number) => {
-    setXp((prev) => prev + gain);
-    setLevel((prev) => {
-      const newXp = xp + gain;
-      const nextThreshold = 1000 + prev * 100;
-      if (newXp >= nextThreshold) {
-        return prev + 1;
-      }
-      return prev;
-    });
-  };
+  // const handleMissionComplete = (gain: number) => {
+  //   setXp((prev) => prev + gain);
+  //   setLevel((prev) => {
+  //     const newXp = xp + gain;
+  //     const nextThreshold = 1000 + prev * 100;
+  //     if (newXp >= nextThreshold) {
+  //       return prev + 1;
+  //     }
+  //     return prev;
+  //   });
+  // };
 
   const handleLogout = () => {
     logout();
