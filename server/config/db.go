@@ -2,7 +2,9 @@ package config
 
 import (
 	"log"
+	"os"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -10,13 +12,26 @@ import (
 var DB *gorm.DB
 
 func ConnectDatabase() {
-	// Change these credentials to match your local PostgreSQL setup
-	dsn := "host=localhost user=postgres password=yourpassword dbname=xplore port=5432 sslmode=disable"
-	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-
+	// Load .env locally.
+	// On Render, environment variables are provided directly.
+	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Failed to connect to database: ", err)
+		log.Println("⚠️ No .env file found, using system environment variables")
+	}
+
+	// Read DATABASE_URL
+	dsn := os.Getenv("DATABASE_URL")
+	if dsn == "" {
+		log.Fatal("❌ DATABASE_URL is not set")
+	}
+
+	// Connect to PostgreSQL using GORM
+	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal("❌ Database Connection Failed: ", err)
 	}
 
 	DB = database
+
+	log.Println("✅ PostgreSQL Connected Successfully")
 }

@@ -2,12 +2,20 @@ import {
   createContext,
   useContext,
   useState,
+  useEffect,
   ReactNode,
 } from "react";
+import { getProfile } from "../services/auth";
 
 interface User {
   email: string;
   explorer_name?: string;
+  role?: string;
+  xp?: number;
+  level?: number;
+  streak?: number;
+  gems?: number;
+  last_active?: string;
 }
 
 interface AuthContextType {
@@ -15,6 +23,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (user: User, token?: string) => void;
   logout: () => void;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>(
@@ -53,7 +62,31 @@ export const AuthProvider = ({
     setUser(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("currentMissionDomain");
+    localStorage.removeItem("learningMissionsState");
   };
+
+  const refreshUser = async () => {
+    const token = localStorage.getItem("token");
+    if (token && token !== "authenticated" && token !== "sample-session-token-active") {
+      try {
+        const res = await getProfile(token);
+        if (res.data.user) {
+          const updatedUser = res.data.user;
+          setUser(updatedUser);
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+        }
+      } catch (err) {
+        console.error("Failed to fetch profile stats:", err);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      refreshUser();
+    }
+  }, [isAuthenticated]);
 
   return (
     <AuthContext.Provider
@@ -62,6 +95,7 @@ export const AuthProvider = ({
         isAuthenticated,
         login,
         logout,
+        refreshUser,
       }}
     >
       {children}

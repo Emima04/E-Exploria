@@ -15,13 +15,14 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    role: "explorer",
   });
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setFormData({
       ...formData,
@@ -76,14 +77,19 @@ const Register = () => {
         name: formData.name,
         email: formData.email,
         password: formData.password,
+        role: formData.role,
       });
 
       navigate("/login");
     } catch (err: any) {
-      const serverMessage = err.message || err.response?.data?.message || err.response?.data?.error;
-
-      if (serverMessage) {
-        setError(serverMessage);
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else if (err.response?.data?.error) {
+        setError(err.response.data.error);
+      } else if (err.message === "Network Error" || err.code === "ERR_NETWORK" || !err.response) {
+        setError("Cannot connect to server. Please make sure the backend server is running on port 8080.");
+      } else if (err.message) {
+        setError(err.message);
       } else {
         setError("Registration failed. Please try again.");
       }
@@ -142,6 +148,37 @@ const Register = () => {
             placeholder="Enter your explorer name"
           />
 
+          <div className="space-y-2">
+            <label className="block text-cyan-300 text-sm tracking-widest uppercase">
+              Role
+            </label>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              className="
+                w-full
+                rounded-xl
+                border
+                border-cyan-500/40
+                bg-white/5
+                px-4
+                py-3
+                text-white
+                placeholder:text-gray-400
+                backdrop-blur-lg
+                outline-none
+                focus:border-cyan-300
+                focus:ring-2
+                focus:ring-cyan-500/30
+                transition-all
+              "
+            >
+              <option value="explorer">Explorer</option>
+              <option value="faculty">Faculty</option>
+            </select>
+          </div>
+
           <InputField
             label="Email Address"
             type="email"
@@ -171,7 +208,11 @@ const Register = () => {
 
           <div className="pt-3">
             <Button type="submit" disabled={loading}>
-              {loading ? "CREATING PROFILE..." : "🚀 CREATE EXPLORER"}
+              {loading
+                ? "CREATING PROFILE..."
+                : formData.role === "faculty"
+                ? "CREATE FACULTY"
+                : "🚀 CREATE EXPLORER"}
             </Button>
           </div>
         </form>

@@ -1,13 +1,16 @@
 // components/Navbar.tsx
 
-import { Home, Target, Trophy, Award } from "lucide-react";
+import { Home, Target, Trophy, Award, Users } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
+  
+  const { user } = useAuth();
 
-  const menus = [
+  const explorerMenus = [
     {
       title: "Home",
       icon: <Home size={18} />,
@@ -29,6 +32,16 @@ export default function Navbar() {
       to: "/achievements",
     },
   ];
+
+  const facultyMenus = [
+    {
+      title: "Faculty",
+      icon: <Users size={18} />,
+      to: "/faculty",
+    },
+  ];
+
+  const menus = user?.role === "faculty" ? facultyMenus : explorerMenus;
 
   return (
     <header className="relative flex items-center px-8 py-6">
@@ -53,9 +66,9 @@ export default function Navbar() {
 
       {/* Center Navigation */}
 
-      <div className="absolute left-1/2 -translate-x-1/2">
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
 
-        <div className="flex items-center gap-7 rounded-2xl border border-cyan-500/20 bg-[#07101dcc] px-4 py-3 backdrop-blur-xl shadow-lg shadow-cyan-500/10">
+        <div className="flex items-center gap-3 rounded-2xl border border-cyan-500/20 bg-[#07101dcc] px-3 py-1.5 backdrop-blur-xl shadow-lg shadow-cyan-500/10">
 
           {menus.map((menu) => {
             const isActive = location.pathname === menu.to;
@@ -64,7 +77,7 @@ export default function Navbar() {
                 key={menu.title}
                 type="button"
                 onClick={() => navigate(menu.to)}
-                className={`flex items-center gap-6 rounded-xl px-16 py-5 text-base font-semibold transition-all duration-300 ${
+                className={`flex items-center gap-3 rounded-xl px-6 py-2.5 text-sm font-semibold transition-all duration-300 ${
                   isActive
                     ? "bg-cyan-400 text-black shadow-[0_0_25px_rgba(34,211,238,0.45)]"
                     : "text-gray-300 hover:bg-cyan-500/10 hover:text-cyan-300"

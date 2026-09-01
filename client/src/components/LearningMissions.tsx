@@ -8,49 +8,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-
-const missions = [
-  {
-    title: "HTML",
-    subtitle: "Web Foundation",
-    progress: 80,
-    xp: 60,
-    color: "cyan",
-    icon: Globe,
-  },
-  {
-    title: "CSS",
-    subtitle: "Style Lab",
-    progress: 40,
-    xp: 40,
-    color: "purple",
-    icon: Palette,
-  },
-  {
-    title: "JavaScript",
-    subtitle: "Logic Engine",
-    progress: 65,
-    xp: 80,
-    color: "yellow",
-    icon: Code2,
-  },
-  {
-    title: "DBMS",
-    subtitle: "Data Vault",
-    progress: 55,
-    xp: 120,
-    color: "red",
-    icon: Database,
-  },
-  {
-    title: "AI",
-    subtitle: "Neural Nexus",
-    progress: 20,
-    xp: 150,
-    color: "green",
-    icon: Brain,
-  },
-];
+import api from "../lib/api";
 
 const colors = {
   cyan: {
@@ -85,126 +43,117 @@ const colors = {
   },
 };
 
-type MissionState = {
-  started: boolean;
-  progress: number;
-};
-
 type LearningMissionsProps = {
   onSelectMission?: (domainKey: string) => void;
 };
 
 export default function LearningMissions({ onSelectMission }: LearningMissionsProps) {
   const navigate = useNavigate();
-  const [missionState, setMissionState] = useState<Record<string, MissionState>>({});
+  const [missions, setMissions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const mapToDomain = (title: string) => {
+  useEffect(() => {
+    let active = true;
+    api
+      .get("/missions")
+      .then((res) => {
+        if (!active) return;
+        setMissions(res.data.missions || []);
+      })
+      .catch((err) => console.error("Error loading learning missions:", err))
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const getIcon = (title: string) => {
     switch (title) {
-      case "HTML":
-        return "HTML5";
-      case "CSS":
-        return "CSS3";
-      case "JavaScript":
-        return "JS";
+      case "HTML5":
+        return Globe;
+      case "CSS3":
+        return Palette;
+      case "JS":
+        return Code2;
+      case "DBMS":
+        return Database;
+      case "AI":
+        return Brain;
+      default:
+        return Globe;
+    }
+  };
+
+  const getCleanLabel = (title: string) => {
+    switch (title) {
+      case "HTML5":
+        return "HTML";
+      case "CSS3":
+        return "CSS";
+      case "JS":
+        return "JavaScript";
       case "DBMS":
         return "DBMS";
       case "AI":
         return "AI";
       default:
-        return "HTML5";
+        return title;
     }
   };
 
-  useEffect(() => {
-    const stored = localStorage.getItem("learningMissionsState");
-    if (stored) {
-      try {
-        setMissionState(JSON.parse(stored));
-      } catch {
-        setMissionState({});
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("learningMissionsState", JSON.stringify(missionState));
-  }, [missionState]);
-
   return (
     <div className="rounded-3xl border border-cyan-500/20 bg-[#07101dcc] p-6 backdrop-blur-xl">
-
       <div className="mb-6 flex items-center justify-between">
-
         <h2 className="text-xl font-bold">Learning Missions</h2>
-
-        <button className="text-cyan-400 hover:text-white">View All →</button>
-
+        <button onClick={() => navigate("/quests")} className="text-cyan-400 hover:text-white cursor-pointer">View All →</button>
       </div>
 
-      <div className="grid grid-cols-5 gap-5">
+      {loading ? (
+        <div className="text-sm text-gray-400 py-6">Connecting to database node...</div>
+      ) : missions.length === 0 ? (
+        <div className="text-sm text-gray-400 py-6">No learning missions created yet.</div>
+      ) : (
+        <div className="grid grid-cols-5 gap-5">
+          {missions.map((mission) => {
+            const Icon = getIcon(mission.title);
+            const label = getCleanLabel(mission.title);
+            const style = colors[mission.color as keyof typeof colors] || colors.cyan;
 
-        {missions.map((mission) => {
-          const Icon = mission.icon;
-          const style = colors[mission.color as keyof typeof colors];
-          const currentState = missionState[mission.title] || { started: false, progress: 0 };
-          const buttonText = currentState.started ? "Continue" : "Start";
-          const displayProgress = currentState.started ? currentState.progress : 0;
-
-          return (
-            <div
-              key={mission.title}
-              className={`rounded-2xl border ${style.border} bg-gradient-to-b ${style.bg} p-5 shadow-lg ${style.glow} transition duration-300 hover:-translate-y-2 hover:scale-105`}
-            >
-              <Icon className={`${style.text} mb-5`} size={34} />
-
-              <p className="text-xs text-gray-400">{mission.title}</p>
-
-              <h3 className="mb-5 text-lg font-bold">{mission.subtitle}</h3>
-
-              <div className="mb-3 flex justify-between text-sm">
-
-                <span>{displayProgress}%</span>
-
-                <span>{mission.xp} XP</span>
-
-              </div>
-
-              <div className="mb-5 h-2 overflow-hidden rounded-full bg-slate-700">
-
-                <div className="h-full rounded-full bg-cyan-400" style={{ width: `${displayProgress}%` }} />
-
-              </div>
-
-              <button
-                onClick={() => {
-                  setMissionState((prev) => {
-                    const existing = prev[mission.title] || { started: false, progress: 0 };
-                    const step = Math.max(10, Math.round(mission.progress * 0.2));
-                    const nextProgress = existing.started
-                      ? Math.min(mission.progress, existing.progress + step)
-                      : step;
-
-                    return {
-                      ...prev,
-                      [mission.title]: {
-                        started: true,
-                        progress: nextProgress,
-                      },
-                    };
-                  });
-                  const domain = mapToDomain(mission.title);
-                  onSelectMission?.(domain);
-                  navigate("/cyber-room", { state: { selectedDomain: domain } });
-                }}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-white/10 py-2 text-sm transition hover:bg-cyan-500 hover:text-black cursor-pointer"
+            return (
+              <div
+                key={mission.id}
+                className={`rounded-2xl border ${style.border} bg-gradient-to-b ${style.bg} p-5 shadow-lg ${style.glow} transition duration-300 hover:-translate-y-2 hover:scale-105`}
               >
-                {buttonText}
-                <ArrowRight size={16} />
-              </button>
-            </div>
-          );
-        })}
-      </div>
+                <Icon className={`${style.text} mb-5`} size={34} />
+                <p className="text-xs text-gray-400">{label}</p>
+                <h3 className="mb-5 text-sm font-bold h-10 overflow-hidden line-clamp-2">{mission.subtitle}</h3>
+
+                <div className="mb-3 flex justify-between text-xs">
+                  <span>{mission.progress}%</span>
+                  <span>{mission.xp} XP</span>
+                </div>
+
+                <div className="mb-5 h-2 overflow-hidden rounded-full bg-slate-700">
+                  <div className="h-full rounded-full bg-cyan-400" style={{ width: `${mission.progress}%` }} />
+                </div>
+
+                <button
+                  onClick={() => {
+                    onSelectMission?.(mission.title);
+                    navigate("/cyber-room", { state: { selectedDomain: mission.title } });
+                  }}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-white/10 py-2 text-xs transition hover:bg-cyan-500 hover:text-black cursor-pointer font-bold"
+                >
+                  {mission.progress > 0 ? "Continue" : "Start"}
+                  <ArrowRight size={14} />
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

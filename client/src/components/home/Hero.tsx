@@ -62,6 +62,9 @@ export default function Hero() {
               <span className="text-zinc-300 font-medium text-sm md:text-base">
                 Explorer: <span className="text-cyan-400">{user?.explorer_name || "Active"}</span>
               </span>
+              <span className="text-zinc-300 font-medium text-sm md:text-base">
+                Role: <span className="text-cyan-400">{user?.role ? user.role.toUpperCase() : "EXPLORER"}</span>
+              </span>
               <button
                 onClick={handleLogout}
                 className="px-5 py-2 rounded-lg border border-red-500/40 bg-red-500/10 text-red-300 hover:bg-red-500 hover:text-white transition-all duration-300 text-sm font-semibold cursor-pointer"

@@ -6,28 +6,33 @@ import {
   Bot,
   Settings,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import SystemStatus from "./SystemStatus";
 
 export default function Sidebar() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const items = [
     {
       icon: <LayoutDashboard size={24} />,
       name: "Dashboard",
-      active: true,
+      active: location.pathname === "/",
     },
     {
       icon: <Brain size={24} />,
       name: "Skills",
+      active: location.pathname === "/skills",
     },
     {
       icon: <Bot size={24} />,
       name: "AI Companion",
+      active: location.pathname === "/ai-companion",
     },
     {
       icon: <Settings size={24} />,
       name: "Settings",
+      active: location.pathname === "/settings",
     },
   ];
 
@@ -49,8 +54,12 @@ export default function Sidebar() {
               onClick={() => {
                 if (item.name === "Dashboard") {
                   navigate("/");
-                } else {
-                  navigate("/cyber-room");
+                } else if (item.name === "Skills") {
+                  navigate("/skills");
+                } else if (item.name === "AI Companion") {
+                  navigate("/ai-companion");
+                } else if (item.name === "Settings") {
+                  navigate("/settings");
                 }
               }}
               className={`group flex w-full items-center gap-5 rounded-2xl px-6 py-5 text-lg font-semibold transition-all duration-300 cursor-pointer

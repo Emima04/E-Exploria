@@ -9,13 +9,12 @@ import {
   Flame,
   LogOut,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import MissionCard from "../components/MissionCard";
 import ActiveCases from "../components/ActiveCases";
-import LearningMissions from "../components/LearningMissions";
 import AICompanion from "../components/AICompanion";
 import Leaderboard from "../components/Leaderboard";
 import DailyReward from "../components/DailyReward";
@@ -29,33 +28,27 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Home() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout } = useAuth();
+
+  const roleSubtitle = user?.role === "faculty" ? "Mentor & Guide" : "Level 7 Adventurer";
 
   // ==========================================
   // ADDED INTERACTIVE QUIZ CONFIGURATION REGISTERS
   // ==========================================
+  const xp = user?.xp ?? 0;
+  const level = user?.level ?? 1;
+  const streak = user?.streak ?? 0;
+  const gems = user?.gems ?? 0;
+
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   const [selectedDomain, setSelectedDomain] = useState("HTML5");
-  const [currentMissionDomain, setCurrentMissionDomain] = useState("DBMS");
-  const [xp, setXp] = useState(1200);
-  const [level, setLevel] = useState(7);
-
-  // const xpThreshold = 1000 + level * 100;
-  // const xpProgress = Math.min(100, Math.round((xp % xpThreshold / xpThreshold) * 100));
+  const [currentMissionDomain, setCurrentMissionDomain] = useState("HTML5");
 
   useEffect(() => {
     const saved = localStorage.getItem("currentMissionDomain");
-    const savedXp = localStorage.getItem("xp");
-    const savedLevel = localStorage.getItem("level");
-
     if (saved) {
       setCurrentMissionDomain(saved);
-    }
-    if (savedXp) {
-      setXp(parseInt(savedXp, 10));
-    }
-    if (savedLevel) {
-      setLevel(parseInt(savedLevel, 10));
     }
   }, []);
 
@@ -64,9 +57,11 @@ export default function Home() {
   }, [currentMissionDomain]);
 
   useEffect(() => {
-    localStorage.setItem("xp", xp.toString());
-    localStorage.setItem("level", level.toString());
-  }, [xp, level]);
+    if (!location.state?.focusAiCompanion) return;
+
+    document.getElementById("ai-companion")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    navigate("/", { replace: true, state: null });
+  }, [location.state, navigate]);
 
   const handleLaunchQuiz = (domainKey: string) => {
     setSelectedDomain(domainKey);
@@ -96,7 +91,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden text-white">
+    <div className="relative min-h-screen overflow-y-auto pb-10 text-white">
 
       {/* Background */}
 
@@ -201,7 +196,7 @@ export default function Home() {
 
                 <h2 className="text-2xl font-bold">
 
-                  7 Days
+                  {streak} Days
 
                 </h2>
 
@@ -228,7 +223,7 @@ export default function Home() {
 
                 <h2 className="text-2xl font-bold">
 
-                  42
+                  {gems}
 
                 </h2>
 
@@ -295,7 +290,7 @@ export default function Home() {
 
                 <p className="text-sm text-gray-400">
 
-                  Level 7 Adventurer
+                  {roleSubtitle}
 
                 </p>
 
@@ -332,10 +327,6 @@ export default function Home() {
 
             <ActiveCases onSelectMission={handleCurrentMissionUpdate} />
 
-            {/* Learning Missions */}
-
-            <LearningMissions onSelectMission={handleCurrentMissionUpdate} />
-
           </div>
 
           {/* ===================== */}
@@ -345,6 +336,7 @@ export default function Home() {
           <motion.div
             initial={{ x: 30, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
+            id="ai-companion"
             className="col-span-3 space-y-6"
           >
 

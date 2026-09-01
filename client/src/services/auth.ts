@@ -7,6 +7,19 @@ const API = axios.create({
   },
 });
 
+API.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token && token !== "authenticated" && token !== "sample-session-token-active") {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 API.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -31,12 +44,14 @@ export const registerUser = async (data: {
   name: string;
   email: string;
   password: string;
+  role: string;
 }) => {
   // We match Go's expectations here by changing the key name to explorer_name
   return API.post("/register", {
-    explorer_name: data.name, 
+    explorer_name: data.name,
     email: data.email,
     password: data.password,
+    role: data.role,
   });
 };
 

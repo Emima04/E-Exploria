@@ -63,7 +63,9 @@ const Login = () => {
       const user = response.data.user ?? { email: formData.email };
       login(user, response.data.token);
 
-      navigate("/");
+      // Redirect users to their role-specific dashboard
+      const role = response.data.user?.role || user?.role || "explorer";
+      navigate(role === "faculty" ? "/faculty" : "/");
     } catch (err: any) {
       if (err.response?.data?.message) {
         setError(err.response.data.message);
