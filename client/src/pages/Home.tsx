@@ -42,8 +42,8 @@ export default function Home() {
   const gems = user?.gems ?? 0;
 
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
-  const [selectedDomain, setSelectedDomain] = useState("HTML5");
-  const [currentMissionDomain, setCurrentMissionDomain] = useState("HTML5");
+  const [selectedDomain, setSelectedDomain] = useState("DSA");
+  const [currentMissionDomain, setCurrentMissionDomain] = useState("DSA");
 
   useEffect(() => {
     const saved = localStorage.getItem("currentMissionDomain");
@@ -234,6 +234,7 @@ export default function Home() {
             {/* QUICK LAUNCH MATRIX CONTROLS FOR TESTING */}
             <div className="h-10 w-px bg-cyan-500/20" />
             <div className="flex items-center gap-1 bg-slate-950/40 rounded-xl p-1 border border-slate-800">
+              <button onClick={() => handleLaunchQuiz("DSA")} className="text-[9px] font-mono px-2 py-1 bg-cyan-400 text-black font-bold rounded hover:bg-cyan-300 transition">DSA</button>
               <button onClick={() => handleLaunchQuiz("HTML5")} className="text-[9px] font-mono px-2 py-1 bg-cyan-500/20 rounded hover:bg-cyan-500/40 transition">HTML</button>
               <button onClick={() => handleLaunchQuiz("CSS3")} className="text-[9px] font-mono px-2 py-1 bg-purple-500/20 rounded hover:bg-purple-500/40 transition">CSS</button>
               <button onClick={() => handleLaunchQuiz("JS")} className="text-[9px] font-mono px-2 py-1 bg-amber-500/20 rounded hover:bg-amber-500/40 transition">JS</button>

@@ -135,14 +135,22 @@ func SeedInitialData() {
 	config.DB.Model(&models.Mission{}).Count(&countMissions)
 	if countMissions == 0 {
 		missions := []models.Mission{
-			{Title: "HTML Dungeon", Description: "Learn the core markup tags and structural frameworks of the World Wide Web.", Difficulty: "Easy", XPReward: 100, Status: "Active", DomainKey: "HTML5", OrderIndex: 0},
-			{Title: "CSS Castle", Description: "Configure layout layout rules, style cascading overrides, and custom matrix grids.", Difficulty: "Easy", XPReward: 120, Status: "Active", DomainKey: "CSS3", OrderIndex: 1},
-			{Title: "JavaScript Forest", Description: "Establish scripting logic triggers, scope variables, and loop iteration engines.", Difficulty: "Medium", XPReward: 150, Status: "Active", DomainKey: "JS", OrderIndex: 2},
-			{Title: "Database Breach", Description: "Recover missing relational data catalogs and inspect query filter blocks.", Difficulty: "Hard", XPReward: 200, Status: "Active", DomainKey: "DBMS", OrderIndex: 3},
-			{Title: "AI Nexus", Description: "Debug deep model neural pathways and correct evaluation weight anomalies.", Difficulty: "Hard", XPReward: 250, Status: "Active", DomainKey: "AI", OrderIndex: 4},
+			{Title: "DSA Cyber Core", Description: "Master Stacks, Queues, Hashing, Recursion, and Binary Search algorithms inside the Cyber Room.", Difficulty: "Beginner", XPReward: 150, Status: "Active", DomainKey: "DSA", OrderIndex: 0},
+			{Title: "HTML Dungeon", Description: "Learn the core markup tags and structural frameworks of the World Wide Web.", Difficulty: "Easy", XPReward: 100, Status: "Active", DomainKey: "HTML5", OrderIndex: 1},
+			{Title: "CSS Castle", Description: "Configure layout layout rules, style cascading overrides, and custom matrix grids.", Difficulty: "Easy", XPReward: 120, Status: "Active", DomainKey: "CSS3", OrderIndex: 2},
+			{Title: "JavaScript Forest", Description: "Establish scripting logic triggers, scope variables, and loop iteration engines.", Difficulty: "Medium", XPReward: 150, Status: "Active", DomainKey: "JS", OrderIndex: 3},
+			{Title: "Database Breach", Description: "Recover missing relational data catalogs and inspect query filter blocks.", Difficulty: "Hard", XPReward: 200, Status: "Active", DomainKey: "DBMS", OrderIndex: 4},
+			{Title: "AI Nexus", Description: "Debug deep model neural pathways and correct evaluation weight anomalies.", Difficulty: "Hard", XPReward: 250, Status: "Active", DomainKey: "AI", OrderIndex: 5},
 		}
 
 		questionsMap := map[string][]models.Question{
+			"DSA": {
+				{Question: "Which data structure follows the Last-In, First-Out (LIFO) principle?", Options: `["Stack", "Queue", "Binary Tree"]`, Correct: 0, XP: 30},
+				{Question: "Which operation removes the front element from a Queue?", Options: `["Push", "Dequeue", "Pop"]`, Correct: 1, XP: 30},
+				{Question: "What is the average time complexity for key lookup in a Hash Table?", Options: `["O(1)", "O(n)", "O(log n)"]`, Correct: 0, XP: 30},
+				{Question: "What terminating condition must every recursive function define?", Options: `["Base Case", "Break Loop", "Pointer Reset"]`, Correct: 0, XP: 30},
+				{Question: "Binary Search operates efficiently on what kind of array?", Options: `["Sorted Array", "Reversed Array", "Unordered Array"]`, Correct: 0, XP: 30},
+			},
 			"HTML5": {
 				{Question: "What does HTML stand for?", Options: `["Hyper Text Markup Language", "High Text Machine Language", "Hyper Tabular Multi Language"]`, Correct: 0, XP: 20},
 				{Question: "Which HTML tag is used for the largest heading?", Options: `["<heading>", "<h6>", "<h1>"]`, Correct: 2, XP: 20},

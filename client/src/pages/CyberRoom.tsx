@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import background from "../assets/images/cyber/background.png";
 import {
@@ -11,6 +12,7 @@ import MonitorPuzzle from "../components/puzzles/cyber/monitor/MonitorPuzzle";
 import Hotspot from "../components/puzzles/shared/Hotspot";
 import InventoryBar from "../components/puzzles/shared/InventoryBar";
 import LaptopPuzzle from "../components/puzzles/cyber/laptop/LaptopPuzzle";
+import { getMissionProgress, setMissionProgress } from "../lib/missionProgress";
 
 const DEBUG_HOTSPOTS = true;
 
@@ -34,6 +36,13 @@ const HOTSPOT_ORDER: PuzzleId[] = [
 ];
 
 export default function CyberRoom() {
+  const location = useLocation();
+  const requestedCase = ((location.state as { caseType?: string } | null)?.caseType || "stack").toLowerCase();
+  const requestedIndex = requestedCase === "queue" ? 1 : 0;
+  const savedProgress = getMissionProgress();
+  const firstIncompleteIndex = ["Stack", "Queue", "Hashing", "Recursion", "Searching"]
+    .findIndex((title) => savedProgress[title as keyof typeof savedProgress] < 100);
+  const startingIndex = Math.max(requestedIndex, firstIncompleteIndex < 0 ? 0 : firstIncompleteIndex);
   const [activePuzzle, setActivePuzzle] =
     useState<PuzzleId | null>(null);
 
@@ -50,7 +59,7 @@ export default function CyberRoom() {
    */
 
   const [unlockedIndex, setUnlockedIndex] =
-    useState(0);
+    useState(startingIndex);
 
   function completePuzzle(id: PuzzleId) {
     const currentIndex =
@@ -63,6 +72,13 @@ export default function CyberRoom() {
       nextIndex < HOTSPOT_ORDER.length
     ) {
       setUnlockedIndex(nextIndex);
+    }
+
+    if (id === "monitor") {
+      setMissionProgress("Stack", 100);
+    }
+    if (id === "laptop") {
+      setMissionProgress("Queue", 100);
     }
 
     setActivePuzzle(null);

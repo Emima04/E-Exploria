@@ -1,7 +1,7 @@
 import {
+  Code2,
   Globe,
   Palette,
-  Code2,
   Database,
   Brain,
   ArrowRight,
@@ -43,14 +43,57 @@ const colors = {
   },
 };
 
+const DEFAULT_LEARNING_MISSIONS = [
+  {
+    id: 1,
+    title: "DSA",
+    subtitle: "Data Structures & Algorithms - Stacks & Queues",
+    xp: 150,
+    progress: 40,
+    color: "cyan",
+  },
+  {
+    id: 2,
+    title: "HTML5",
+    subtitle: "Web Matrix Foundations",
+    xp: 60,
+    progress: 0,
+    color: "purple",
+  },
+  {
+    id: 3,
+    title: "CSS3",
+    subtitle: "Cascading Style Core",
+    xp: 80,
+    progress: 0,
+    color: "yellow",
+  },
+  {
+    id: 4,
+    title: "JS",
+    subtitle: "Runtime Logic Engines",
+    xp: 100,
+    progress: 0,
+    color: "red",
+  },
+  {
+    id: 5,
+    title: "DBMS",
+    subtitle: "Relational Query Archive",
+    xp: 120,
+    progress: 0,
+    color: "green",
+  },
+];
+
 type LearningMissionsProps = {
   onSelectMission?: (domainKey: string) => void;
 };
 
 export default function LearningMissions({ onSelectMission }: LearningMissionsProps) {
   const navigate = useNavigate();
-  const [missions, setMissions] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [missions, setMissions] = useState<any[]>(DEFAULT_LEARNING_MISSIONS);
+  const [loading] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -58,11 +101,19 @@ export default function LearningMissions({ onSelectMission }: LearningMissionsPr
       .get("/missions")
       .then((res) => {
         if (!active) return;
-        setMissions(res.data.missions || []);
+        if (res.data.missions && res.data.missions.length > 0) {
+          // Check if DSA is in the list, if not place it first
+          const loaded = res.data.missions;
+          const hasDSA = loaded.some((m: any) => m.title === "DSA" || m.domain_key === "DSA");
+          if (!hasDSA) {
+            setMissions([DEFAULT_LEARNING_MISSIONS[0], ...loaded]);
+          } else {
+            setMissions(loaded);
+          }
+        }
       })
-      .catch((err) => console.error("Error loading learning missions:", err))
-      .finally(() => {
-        if (active) setLoading(false);
+      .catch((err) => {
+        console.error("Error loading learning missions:", err);
       });
     return () => {
       active = false;
@@ -71,6 +122,8 @@ export default function LearningMissions({ onSelectMission }: LearningMissionsPr
 
   const getIcon = (title: string) => {
     switch (title) {
+      case "DSA":
+        return Code2;
       case "HTML5":
         return Globe;
       case "CSS3":
@@ -82,12 +135,14 @@ export default function LearningMissions({ onSelectMission }: LearningMissionsPr
       case "AI":
         return Brain;
       default:
-        return Globe;
+        return Code2;
     }
   };
 
   const getCleanLabel = (title: string) => {
     switch (title) {
+      case "DSA":
+        return "DSA";
       case "HTML5":
         return "HTML";
       case "CSS3":
@@ -115,7 +170,7 @@ export default function LearningMissions({ onSelectMission }: LearningMissionsPr
       ) : missions.length === 0 ? (
         <div className="text-sm text-gray-400 py-6">No learning missions created yet.</div>
       ) : (
-        <div className="grid grid-cols-5 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
           {missions.map((mission) => {
             const Icon = getIcon(mission.title);
             const label = getCleanLabel(mission.title);
@@ -141,8 +196,9 @@ export default function LearningMissions({ onSelectMission }: LearningMissionsPr
 
                 <button
                   onClick={() => {
-                    onSelectMission?.(mission.title);
-                    navigate("/cyber-room", { state: { selectedDomain: mission.title } });
+                    const domainKey = mission.domain_key || mission.title;
+                    onSelectMission?.(domainKey);
+                    navigate("/cyber-room", { state: { selectedDomain: domainKey } });
                   }}
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-white/10 py-2 text-xs transition hover:bg-cyan-500 hover:text-black cursor-pointer font-bold"
                 >

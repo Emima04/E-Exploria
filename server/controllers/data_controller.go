@@ -60,75 +60,17 @@ type AnnouncementInput struct {
 	Content string `json:"content" binding:"required"`
 }
 
-// GetCases returns active cases from database with user-specific progress
+// GetCases returns active cases representing core DSA topics
 func GetCases(c *gin.Context) {
-	userID, exists := c.Get("user_id")
-	if !exists {
-		c.JSON(http.StatusOK, gin.H{"cases": []CaseItem{}})
-		return
+	dsaCases := []CaseItem{
+		{ID: 1, Title: "Stack", Subtitle: "Command Buffer LIFO Protocol", Progress: 100, Status: "COMPLETED", IconKey: "stack", Domain: "DSA"},
+		{ID: 2, Title: "Queue", Subtitle: "Packet Queue FIFO Analysis", Progress: 50, Status: "ACTIVE", IconKey: "queue", Domain: "DSA"},
+		{ID: 3, Title: "Hashing", Subtitle: "Key-Value Hash Vault", Progress: 0, Status: "LOCKED", IconKey: "hashing", Domain: "DSA"},
+		{ID: 4, Title: "Recursion", Subtitle: "Recursive Tree Traversal", Progress: 0, Status: "LOCKED", IconKey: "recursion", Domain: "DSA"},
+		{ID: 5, Title: "Searching", Subtitle: "Binary Search Memory Scan", Progress: 0, Status: "LOCKED", IconKey: "searching", Domain: "DSA"},
 	}
 
-	var dbMissions []models.Mission
-	if err := config.DB.Order("order_index ASC").Find(&dbMissions).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch missions"})
-		return
-	}
-
-	var progress []models.UserProgress
-	config.DB.Where("user_id = ?", userID).Find(&progress)
-
-	progressMap := make(map[uint]models.UserProgress)
-	for _, p := range progress {
-		progressMap[p.MissionID] = p
-	}
-
-	var cases []CaseItem
-	prevCompleted := true
-
-	for i, m := range dbMissions {
-		p, ok := progressMap[m.ID]
-		status := "LOCKED"
-		progVal := 0
-
-		if ok {
-			progVal = p.Progress
-			if p.Status == "Completed" {
-				status = "COMPLETED"
-			} else {
-				status = "ACTIVE"
-			}
-		} else {
-			if i == 0 || prevCompleted {
-				status = "ACTIVE"
-			}
-		}
-
-		iconKey := "database"
-		switch m.DomainKey {
-		case "HTML5", "CSS3":
-			iconKey = "web"
-		case "JS":
-			iconKey = "ai"
-		case "DBMS":
-			iconKey = "database"
-		case "AI":
-			iconKey = "system"
-		}
-
-		cases = append(cases, CaseItem{
-			ID:       m.ID,
-			Title:    m.Title,
-			Subtitle: m.Description,
-			Progress: progVal,
-			Status:   status,
-			IconKey:  iconKey,
-			Domain:   m.DomainKey,
-		})
-
-		prevCompleted = ok && p.Status == "Completed"
-	}
-
-	c.JSON(http.StatusOK, gin.H{"cases": cases})
+	c.JSON(http.StatusOK, gin.H{"cases": dsaCases})
 }
 
 // GetMissions returns all missions with user-specific progress

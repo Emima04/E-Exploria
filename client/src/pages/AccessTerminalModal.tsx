@@ -20,6 +20,19 @@ interface DomainConfig {
 }
 
 const FALLBACK_DOMAIN_DATA: Record<string, DomainConfig> = {
+  DSA: {
+    title: "Data Structures & Algorithms Core",
+    accentClass: "border-cyan-400 text-cyan-300 bg-cyan-500/10 shadow-[0_0_20px_rgba(34,211,238,0.25)]",
+    glowColor: "#22d3ee",
+    badge: "Primary Mission",
+    questions: [
+      { id: 1, q: "Which data structure follows the Last-In, First-Out (LIFO) principle?", options: ["Stack", "Queue", "Binary Tree"], correct: 0 },
+      { id: 2, q: "Which operation removes the front element from a Queue?", options: ["Push", "Dequeue", "Pop"], correct: 1 },
+      { id: 3, q: "What is the average time complexity for key lookup in a Hash Table?", options: ["O(1)", "O(n)", "O(log n)"], correct: 0 },
+      { id: 4, q: "What terminating condition must every recursive function define?", options: ["Base Case", "Break Loop", "Pointer Reset"], correct: 0 },
+      { id: 5, q: "Binary Search operates efficiently on what kind of array?", options: ["Sorted Array", "Reversed Array", "Unordered Array"], correct: 0 }
+    ]
+  },
   HTML5: {
     title: "HTML5 Matrix Node",
     accentClass: "border-cyan-500 text-cyan-400 bg-cyan-500/10 shadow-[0_0_15px_rgba(6,182,212,0.15)]",
