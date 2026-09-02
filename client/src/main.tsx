@@ -4,6 +4,8 @@ import "./index.css";
 
 import App from "./App";
 import { AuthProvider } from "./context/AuthContext";
+import { AudioProvider } from "./contexts/AudioContext";
+import { InventoryProvider } from "./contexts/InventoryContext";
 
 // Force dark theme by default to match Exploria's cyber/space aesthetic
 if (typeof document !== "undefined") {
@@ -13,7 +15,11 @@ if (typeof document !== "undefined") {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthProvider>
-      <App />
+      <AudioProvider>
+        <InventoryProvider>
+          <App />
+        </InventoryProvider>
+      </AudioProvider>
     </AuthProvider>
   </StrictMode>
 );

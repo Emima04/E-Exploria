@@ -70,7 +70,7 @@ const Login = () => {
       if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else if (err.code === "ERR_NETWORK" || !err.response) {
-        setError("Cannot connect to server. Please make sure the backend server is running on port 8080.");
+        setError("Cannot connect to server. Please make sure the backend server is running on port 3000.");
       } else {
         setError("Invalid email or password.");
       }

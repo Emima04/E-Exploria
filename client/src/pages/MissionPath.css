@@ -1,0 +1,73 @@
+.mission-map{
+
+position:relative;
+
+width:100%;
+height:100vh;
+
+overflow:hidden;
+
+background-size:cover;
+background-position:center;
+
+}
+
+
+.map-overlay{
+
+position:absolute;
+
+inset:0;
+
+background:
+radial-gradient(
+circle,
+transparent 20%,
+rgba(0,0,0,.65)
+);
+
+z-index:1;
+
+}
+
+
+/* snake path */
+.mission-route{
+
+position:absolute;
+
+inset:0;
+
+width:100%;
+height:100%;
+
+z-index:2;
+
+pointer-events:none;
+
+}
+
+
+
+.mission-route path{
+
+fill:none;
+
+
+stroke:#ff4fd8;
+
+
+stroke-width:.7;
+
+
+stroke-linecap:round;
+
+
+stroke-dasharray:1.5 3;
+
+
+/* lightweight glow */
+filter:
+drop-shadow(0 0 4px #ff4fd8);
+
+}

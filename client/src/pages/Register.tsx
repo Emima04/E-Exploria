@@ -87,7 +87,7 @@ const Register = () => {
       } else if (err.response?.data?.error) {
         setError(err.response.data.error);
       } else if (err.message === "Network Error" || err.code === "ERR_NETWORK" || !err.response) {
-        setError("Cannot connect to server. Please make sure the backend server is running on port 8080.");
+        setError("Cannot connect to server. Please make sure the backend server is running on port 3000.");
       } else if (err.message) {
         setError(err.message);
       } else {

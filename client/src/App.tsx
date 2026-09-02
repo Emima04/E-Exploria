@@ -40,6 +40,7 @@ function App() {
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
 
         {/* Mission flow pages */}
+        <Route path="/missions" element={<RoleProtectedRoute allowedRoles={["explorer"]}><MissionPath /></RoleProtectedRoute>} />
         <Route path="/mission-path" element={<RoleProtectedRoute allowedRoles={["explorer"]}><MissionPath /></RoleProtectedRoute>} />
         <Route path="/mission-intro" element={<RoleProtectedRoute allowedRoles={["explorer"]}><MissionIntro /></RoleProtectedRoute>} />
         <Route path="/quests" element={<RoleProtectedRoute allowedRoles={["explorer"]}><Quests /></RoleProtectedRoute>} />
