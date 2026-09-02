@@ -9,9 +9,16 @@ import (
 	"server/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		if fallbackErr := godotenv.Load("server/.env"); fallbackErr != nil {
+			log.Println("No .env file found; using process environment variables")
+		}
+	}
+
 	// Initialize Database Connection
 	config.ConnectDatabase()
 
