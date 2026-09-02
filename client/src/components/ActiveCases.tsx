@@ -223,35 +223,6 @@ export default function ActiveCases({ onSelectMission }: ActiveCasesProps) {
                   </span>
                 </div>
 
-                <div className="mt-4">
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-xs text-slate-400">Progress</span>
-                    <span
-                      className={`text-sm font-semibold ${
-                        isLocked
-                          ? "text-slate-500"
-                          : mission.status === "COMPLETED"
-                          ? "text-emerald-300"
-                          : "text-cyan-300"
-                      }`}
-                    >
-                      {mission.progress}%
-                    </span>
-                  </div>
-
-                  <div className="h-2 overflow-hidden rounded-full bg-slate-800">
-                    <div
-                      className={`h-full rounded-full transition-all duration-700 ${
-                        isLocked
-                          ? "bg-slate-700"
-                          : mission.status === "COMPLETED"
-                          ? "bg-gradient-to-r from-emerald-400 to-teal-500"
-                          : "bg-gradient-to-r from-cyan-400 to-blue-500"
-                      }`}
-                      style={{ width: `${mission.progress}%` }}
-                    />
-                  </div>
-                </div>
               </div>
             );
           })
