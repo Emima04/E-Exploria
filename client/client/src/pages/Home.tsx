@@ -36,8 +36,8 @@ export default function Home() {
   // ADDED INTERACTIVE QUIZ CONFIGURATION REGISTERS
   // ==========================================
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
-  const [selectedDomain, setSelectedDomain] = useState("HTML5");
-  const [currentMissionDomain, setCurrentMissionDomain] = useState("DBMS");
+  const [selectedDomain, setSelectedDomain] = useState("DSA");
+  const [currentMissionDomain, setCurrentMissionDomain] = useState("DSA");
   const [xp, setXp] = useState(1200);
   const [level, setLevel] = useState(7);
 
@@ -49,7 +49,7 @@ export default function Home() {
     const savedXp = localStorage.getItem("xp");
     const savedLevel = localStorage.getItem("level");
 
-    if (saved) {
+    if (saved && saved !== "DBMS") {
       setCurrentMissionDomain(saved);
     }
     if (savedXp) {

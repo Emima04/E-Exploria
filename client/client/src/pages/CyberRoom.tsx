@@ -9,11 +9,13 @@ export default function CyberRoom() {
   const location = useLocation();
   const [showMonitor, setShowMonitor] = useState(false);
   const [incomingDomain, setIncomingDomain] = useState<string | null>(null);
+  const [caseType, setCaseType] = useState("stack");
 
   useEffect(() => {
     const state: any = location.state;
     if (state && state.selectedDomain) {
       setIncomingDomain(state.selectedDomain || "HTML5");
+      setCaseType(state.caseType || "stack");
       setShowMonitor(true);
     }
   }, [location.state]);
@@ -123,7 +125,7 @@ export default function CyberRoom() {
         <AccessTerminalModal
           selectedDomain={incomingDomain || "HTML5"}
           onClose={() => setShowMonitor(false)}
-          onMissionComplete={() => setMissionProgress("Stack", 100)}
+          onMissionComplete={() => setMissionProgress(caseType === "queue" ? "Queue" : "Stack", 100)}
         />
       )}
 
