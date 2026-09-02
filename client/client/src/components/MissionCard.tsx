@@ -2,12 +2,18 @@
 
 import { Play, Flag, Shield, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { DSA_CASES, getMissionProgress, missionProgressEventName } from "../lib/missionProgress";
 
 type MissionCardProps = {
   domainKey?: string;
 };
 
 const MISSION_CARD_DATA: Record<string, { title: string; description: string }> = {
+  DSA: {
+    title: "Data Structures & Algorithms",
+    description: "Investigate the cyber security breach. Master Command Stacks, FIFO Packet Queues, and algorithmic trace forensics inside the Cyber Room.",
+  },
   HTML5: {
     title: "HTML5 Matrix Node",
     description:
@@ -35,9 +41,23 @@ const MISSION_CARD_DATA: Record<string, { title: string; description: string }> 
   },
 };
 
-export default function MissionCard({ domainKey = "DBMS" }: MissionCardProps) {
+export default function MissionCard({ domainKey = "DSA" }: MissionCardProps) {
   const navigate = useNavigate();
-  const mission = MISSION_CARD_DATA[domainKey] || MISSION_CARD_DATA.DBMS;
+  const mission = MISSION_CARD_DATA[domainKey] || MISSION_CARD_DATA.DSA;
+  const [caseProgress, setCaseProgress] = useState(getMissionProgress);
+
+  useEffect(() => {
+    const refreshProgress = () => setCaseProgress(getMissionProgress());
+    window.addEventListener(missionProgressEventName(), refreshProgress);
+    window.addEventListener("storage", refreshProgress);
+    return () => {
+      window.removeEventListener(missionProgressEventName(), refreshProgress);
+      window.removeEventListener("storage", refreshProgress);
+    };
+  }, []);
+
+  const completedCases = DSA_CASES.filter((caseTitle) => caseProgress[caseTitle] === 100).length;
+  const currentProgress = Math.round(DSA_CASES.reduce((total, caseTitle) => total + caseProgress[caseTitle], 0) / DSA_CASES.length);
 
   return (
     <div 
@@ -88,7 +108,7 @@ export default function MissionCard({ domainKey = "DBMS" }: MissionCardProps) {
 
           <span className="font-bold text-cyan-300">
 
-            0%
+            {domainKey === "DSA" ? `${currentProgress}%` : "0%"}
 
           </span>
 
@@ -96,7 +116,7 @@ export default function MissionCard({ domainKey = "DBMS" }: MissionCardProps) {
 
         <div className="h-3 overflow-hidden rounded-full bg-slate-800">
 
-          <div className="h-full w-[0%] rounded-full bg-gradient-to-r from-cyan-400 to-blue-500" />
+          <div className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-500" style={{ width: `${domainKey === "DSA" ? currentProgress : 0}%` }} />
 
         </div>
 
@@ -118,7 +138,7 @@ export default function MissionCard({ domainKey = "DBMS" }: MissionCardProps) {
 
           <h3 className="text-xl font-bold">
 
-            0 / 5
+            {domainKey === "DSA" ? `${completedCases} / ${DSA_CASES.length}` : "0 / 5"}
 
           </h3>
 

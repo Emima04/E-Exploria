@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import background from "../assets/images/cyber/background.png";
 import AccessTerminalModal from "./AccessTerminalModal";
 import { useLocation } from "react-router-dom";
+import { setMissionProgress } from "../lib/missionProgress";
 
 export default function CyberRoom() {
   const location = useLocation();
@@ -122,6 +123,7 @@ export default function CyberRoom() {
         <AccessTerminalModal
           selectedDomain={incomingDomain || "HTML5"}
           onClose={() => setShowMonitor(false)}
+          onMissionComplete={() => setMissionProgress("Stack", 100)}
         />
       )}
 

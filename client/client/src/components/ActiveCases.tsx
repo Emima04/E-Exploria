@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import api from "../lib/api";
+import { DSA_CASES, getMissionProgress, missionProgressEventName } from "../lib/missionProgress";
 
 type CaseItem = {
   id: string;
@@ -25,38 +25,41 @@ type ActiveCasesProps = {
 
 export default function ActiveCases({ onSelectMission }: ActiveCasesProps) {
   const navigate = useNavigate();
-  const [cases, setCases] = useState<CaseItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState(getMissionProgress);
+  const [cases, setCases] = useState<CaseItem[]>(DSA_CASES.map((title, index) => ({
+    id: `case-${title.toLowerCase()}`,
+    title,
+    subtitle: ["Command Buffer LIFO Protocol", "Packet Queue FIFO Analysis", "Key-Value Hash Vault", "Recursive Tree Traversal", "Binary Search Memory Scan"][index],
+    progress: 0,
+    status: index === 0 ? "ACTIVE" : "LOCKED",
+    iconKey: index === 0 ? "system" : "database",
+  })));
 
   useEffect(() => {
-    let cancelled = false;
-    api
-      .get("/cases")
-      .then((res) => {
-        if (cancelled) return;
-        setCases(res.data.cases || []);
-      })
-      .catch(() => {
-        setCases([]);
-      })
-      .finally(() => setLoading(false));
+    const refreshProgress = () => setProgress(getMissionProgress());
+    window.addEventListener(missionProgressEventName(), refreshProgress);
+    window.addEventListener("storage", refreshProgress);
     return () => {
-      cancelled = true;
+      window.removeEventListener(missionProgressEventName(), refreshProgress);
+      window.removeEventListener("storage", refreshProgress);
     };
   }, []);
 
+  useEffect(() => {
+    setCases((currentCases) => currentCases.map((mission, index) => {
+      const missionProgress = progress[DSA_CASES[index]];
+      return {
+        ...mission,
+        progress: missionProgress,
+        status: missionProgress === 100 ? "COMPLETED" : index === 0 || progress[DSA_CASES[index - 1]] === 100 ? "ACTIVE" : "LOCKED",
+      };
+    }));
+  }, [progress]);
+
   const mapToDomain = (title: string) => {
     switch (title) {
-      case "Database":
-        return "DBMS";
-      case "Web Intrusion":
-        return "HTML5";
-      case "AI Anomaly":
-        return "JS";
-      case "System Overload":
-        return "DBMS";
       default:
-        return "HTML5";
+        return "DSA";
     }
   };
 
@@ -87,10 +90,7 @@ export default function ActiveCases({ onSelectMission }: ActiveCasesProps) {
       </div>
 
       <div className="grid grid-cols-2 gap-2">
-        {loading ? (
-          <div className="col-span-2 p-6">Loading cases...</div>
-        ) : (
-          cases.map((mission) => {
+        {cases.map((mission) => {
             const Icon = renderIcon(mission.iconKey);
             return (
               <div
@@ -99,7 +99,7 @@ export default function ActiveCases({ onSelectMission }: ActiveCasesProps) {
                   if (mission.status !== "LOCKED") {
                     const domain = mapToDomain(mission.title);
                     onSelectMission?.(domain);
-                    navigate("/cyber-room", { state: { selectedDomain: domain } });
+                    navigate("/cyber-room", { state: { selectedDomain: domain, caseType: mission.title.toLowerCase() } });
                   }
                 }}
                 className={`rounded-2xl border p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl
@@ -156,8 +156,7 @@ export default function ActiveCases({ onSelectMission }: ActiveCasesProps) {
                 </div>
               </div>
             );
-          })
-        )}
+          })}
       </div>
     </div>
   );
