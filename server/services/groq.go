@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-const defaultGroqModel = "openai/gpt-oss-20b"
+const defaultGroqModel = "llama-3.3-70b-versatile"
 
 type ChatMessage struct {
 	Role    string `json:"role"`
